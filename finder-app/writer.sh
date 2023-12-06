@@ -1,5 +1,5 @@
 #!/bin/bash
-# Write string to a supplied file
+# Write string to a file
 
 readonly writefile=$1
 readonly writestr=$2
@@ -11,7 +11,7 @@ if [[ $# -ne 2 ]]; then
 fi
 
 if [[ ! -d ${filedir} ]]; then
-    mkdir -p ${filedir}
+    mkdir -p "${filedir}"  || { echo "Directory could not be created"; exit 1; }
 fi
 
-echo "${writestr}" > ${writefile} || { echo "File could not be created"; exit 1; }
+echo "${writestr}" > "${writefile}" || { echo "File could not be created"; exit 1; }

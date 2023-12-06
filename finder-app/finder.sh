@@ -9,7 +9,7 @@ if [[ $# -ne 2 ]] || [[ ! -d ${filesdir} ]]; then
 	exit 1
 fi
 
-X=$(grep --files-with-matches "${searchstr}" ${filesdir}/* | wc -l)
-Y=$(grep "${searchstr}" ${filesdir}/* | wc -l)
+countfiles=$(grep --files-with-matches "${searchstr}" ${filesdir}/* | wc -l)
+countmatches=$(grep "${searchstr}" ${filesdir}/* | wc -l)
 
-echo "The number of files are ${X} and the number of matching lines are ${Y}"
+echo "The number of files are ${countfiles} and the number of matching lines are ${countmatches}"
