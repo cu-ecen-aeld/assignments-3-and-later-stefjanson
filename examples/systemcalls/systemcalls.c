@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <fcntl.h>
-
+#include <stdlib.h>
 /**
  * @param cmd the command to execute with system()
  * @return true if the command in @param cmd was executed
