@@ -1,4 +1,11 @@
 #include "systemcalls.h"
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 /**
  * @param cmd the command to execute with system()
@@ -7,17 +14,18 @@
  *   either in invocation of the system() call, or if a non-zero return
  *   value was returned by the command issued in @param cmd.
 */
-bool do_system(const char *cmd)
-{
+bool do_system(const char *cmd) {
+    // Use the system() function to execute the command
+    int result = system(cmd);
 
-/*
- * TODO  add your code here
- *  Call the system() function with the command set in the cmd
- *   and return a boolean true if the system() call completed with success
- *   or false() if it returned a failure
-*/
-
-    return true;
+    // Check the result of the system() call
+    if (result == 0) {
+        // The command completed successfully
+        return true;
+    } else {
+        // The command returned a failure
+        return false;
+    }
 }
 
 /**
@@ -34,66 +42,87 @@ bool do_system(const char *cmd)
 *   by the command issued in @param arguments with the specified arguments.
 */
 
-bool do_exec(int count, ...)
-{
+
+bool do_exec(int count, ...) {
     va_list args;
     va_start(args, count);
-    char * command[count+1];
+
+    char *command[count + 1];
     int i;
-    for(i=0; i<count; i++)
-    {
+    for (i = 0; i < count; i++) {
         command[i] = va_arg(args, char *);
     }
     command[count] = NULL;
-    // this line is to avoid a compile warning before your implementation is complete
-    // and may be removed
-    command[count] = command[count];
 
-/*
- * TODO:
- *   Execute a system command by calling fork, execv(),
- *   and wait instead of system (see LSP page 161).
- *   Use the command[0] as the full path to the command to execute
- *   (first argument to execv), and use the remaining arguments
- *   as second argument to the execv() command.
- *
-*/
+    pid_t child_pid = fork();
 
-    va_end(args);
+    if (child_pid == -1) {
+        // Fork failed
+        va_end(args);
+        return false;
+    }
 
-    return true;
+    if (child_pid == 0) {
+        // Child process
+        execv(command[0], command + 1);
+        // If execv() fails, the code below will be executed
+        perror("execv"); // Print an error message
+        _exit(EXIT_FAILURE); // Terminate the child process with an error status
+    } else {
+        // Parent process
+        int status;
+        waitpid(child_pid, &status, 0);
+
+        va_end(args);
+
+        // Check if the child process terminated successfully
+        if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
-/**
-* @param outputfile - The full path to the file to write with command output.
-*   This file will be closed at completion of the function call.
-* All other parameters, see do_exec above
-*/
+
+
 bool do_exec_redirect(const char *outputfile, int count, ...)
 {
     va_list args;
     va_start(args, count);
     char * command[count+1];
     int i;
-    for(i=0; i<count; i++)
+    for(i = 0; i < count; i++)
     {
         command[i] = va_arg(args, char *);
     }
     command[count] = NULL;
-    // this line is to avoid a compile warning before your implementation is complete
-    // and may be removed
-    command[count] = command[count];
 
+    int fd = open(outputfile, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    if (fd == -1) {
+        perror("Error opening file");
+        va_end(args);
+        return false;
+    }
 
-/*
- * TODO
- *   Call execv, but first using https://stackoverflow.com/a/13784315/1446624 as a refernce,
- *   redirect standard out to a file specified by outputfile.
- *   The rest of the behaviour is same as do_exec()
- *
-*/
+    // Redirect standard output to the file descriptor
+    if (dup2(fd, STDOUT_FILENO) == -1) {
+        perror("Error redirecting stdout");
+        close(fd);
+        va_end(args);
+        return false;
+    }
+
+    // Close the file descriptor after redirection
+    close(fd);
+
+    // Now call execv
+    execv(command[0], command);
+
+    // If execv fails, print an error message
+    perror("Error in execv");
 
     va_end(args);
 
-    return true;
+    return false;
 }

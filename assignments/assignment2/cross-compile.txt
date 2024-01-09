@@ -1,1 +1,1 @@
-/home/stef/Cources/coursera/assignment-1-stefjanson/cross-compiler/gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu/bin/../aarch64-none-linux-gnu/libc
+/home/stef/Cources/coursera/assignments/cross-compiler/gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu/bin/../aarch64-none-linux-gnu/libc
