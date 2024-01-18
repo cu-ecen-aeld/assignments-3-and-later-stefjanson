@@ -67,8 +67,10 @@ cd -
 
 if [ ! -d "${OUTDIR}/busybox" ]
 then
-    git clone git://busybox.net/busybox.git ${OUTDIR}
-    cd ${OUTDIR}/busybox
+    echo "Cloning busy box"
+    cd ${OUTDIR}
+    git clone git://busybox.net/busybox.git
+    cd busybox
     git checkout ${BUSYBOX_VERSION}
     # TODO:  Configure busybox
     make distclean
