@@ -5,7 +5,7 @@ struct thread_data {
     bool thread_complete_success;
     int time_obtain_ms;
     int time_release_ms;
-    pthread_mutex_t *mutex;
+    pthread_mutex_t *MUTEX;
 };
 
 /**
