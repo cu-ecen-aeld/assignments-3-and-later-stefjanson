@@ -5,7 +5,7 @@ readonly filesdir=$1
 readonly searchstr=$2
 
 if [[ $# -ne 2 ]] || [[ ! -d ${filesdir} ]]; then
-    echo "./finder filesdir searchstr"
+    echo "finder filesdir searchstr"
 	exit 1
 fi
 
