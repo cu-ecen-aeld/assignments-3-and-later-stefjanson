@@ -12,4 +12,4 @@ fi
 countfiles=$(grep -l "${searchstr}" ${filesdir}/* | wc -l)
 countmatches=$(grep "${searchstr}" ${filesdir}/* | wc -l)
 
-echo "The number of files are ${countfiles} and the number of matching lines are ${countmatches}" > /tmp/assignment4-result.txt
+echo "The number of files are ${countfiles} and the number of matching lines are ${countmatches}"
