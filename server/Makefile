@@ -1,19 +1,19 @@
-CC = $(CROSS_COMPILE)gcc
+# Makefile
+
+CC = gcc
 CFLAGS = -Wall -Wextra
-
-SRC_FILES = aesdsocket.c
-OBJ_FILES = $(SRC_FILES:.c=.o)
+LDFLAGS = -lpthread
 TARGET = aesdsocket
-
-.PHONY: all clean
+SRCS = aesdsocket.c
+OBJS = $(SRCS:.c=.o)
 
 all: $(TARGET)
 
-$(TARGET): $(OBJ_FILES)
-	$(CC) $(CFLAGS) -o $@ $^
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c $< -o $@ $(LDFLAGS)
 
 clean:
-	rm -f $(TARGET) $(OBJ_FILES)
+	rm -f $(TARGET) $(OBJS)
